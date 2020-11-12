@@ -9,7 +9,7 @@ void createStudent(Node*&);
 void deleteNode(Node*, Node*, Node*&, int);
 void addStudent(Student*, Node*&, Node*, Node*);
 void print(Node*);
-void burn(Node*);
+void average(Node*, int, float);
 
 Node* head = NULL;
 
@@ -46,7 +46,7 @@ int main(){
     }
 
     else if(strcmp(input, "AVERAGE") == 0){
-
+      average(head, 0, 0);
     }
     
     for (int i = 0; i <= 20; i++){
@@ -124,13 +124,11 @@ void deleteNode(Node* current, Node* previous, Node* &head, int id){
 	head = current->getNext();
 	current->~Node();
 	//delete &current;
-	burn(current);
       }
       else if(current != head){
 	previous->setNext(current->getNext());
 	current->~Node();
 	//delete &current;
-	burn(current);
       }
     }
     else if(current->getStudent()->getID() != id){
@@ -142,9 +140,24 @@ void deleteNode(Node* current, Node* previous, Node* &head, int id){
   }
 }
 
-void burn(Node* current){
-  delete &current;
-  return;
+void average(Node* current, int count, float total){
+  if(current != NULL){
+    count += 1;
+    total += current->getStudent()->getGPA();
+    average(current->getNext(), count, total);
+  }
+  else if(current == NULL){
+    if(count != 0){
+      float average = (float)(total/count);
+      cout << "The average GPA of all the students is: ";
+      cout.precision(3);
+      cout << average << endl;
+      
+    }
+    else if(count == 0){
+      cout << "There are no students listed" << endl;
+    }
+  }
 }
 
 void print(Node* next){
