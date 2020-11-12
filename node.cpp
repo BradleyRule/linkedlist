@@ -4,28 +4,28 @@
 
 using namespace std;
 
-Node::Node() {
+Node::Node() {//this sets student and next to nothing when node is created
   student = NULL;
   next = NULL;
 }
 
-Node::~Node(){
+Node::~Node(){//deletes the student from memory
   delete &student;
   next = NULL;
 }
 
-void Node::setStudent(Student* newstudent) {
+void Node::setStudent(Student* newstudent) {//sets the student pointer
   student = newstudent;
 }
 
-Student* Node::getStudent(){
+Student* Node::getStudent(){//returns the student pointer
   return student;
 }
 
-void Node::setNext(Node* newnext){
+void Node::setNext(Node* newnext){//sets next node
   next = newnext;
 }
 
-Node* Node::getNext() {
+Node* Node::getNext() {//gets next node
   return next;
 }
