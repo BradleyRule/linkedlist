@@ -141,15 +141,15 @@ void deleteNode(Node* current, Node* previous, Node* &head, int id){//deletes th
 	//set the head equal to the next node
 	head = current->getNext();
 	//delete the current node
-	current->~Node();
-	//delete &current;
+	delete current;
+	current = NULL;
       }
       else if(current != head){//if the node being deleted is not the head
 	//make the previous pointer point to the node after the one that is being deleted
 	previous->setNext(current->getNext());
 	//delete the current node
-	current->~Node();
-	//delete &current;
+	delete current;
+	current = NULL;
       }
     }
     else if(current->getStudent()->getID() != id){//if the ids do not match
