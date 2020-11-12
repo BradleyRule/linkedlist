@@ -5,19 +5,22 @@
 
 using namespace std;
 
-void createStudent(Node*);
-void addStudent(Student*, Node*, Node*);
+void createStudent(Node*&);
+void deleteNode(Node*, Node*, Node*&, int);
+void addStudent(Student*, Node*&, Node*, Node*);
 void print(Node*);
+void burn(Node*);
 
 Node* head = NULL;
 
 int main(){
   bool inuse = 1;
   char input[20];
-  
+  int id = 0;
 
 
   while(inuse == 1){
+    cout << "What would you like to do? (Commands: ADD, PRINT, DELETE, AVERAGE, QUIT)" << endl;
     cin.get(input, 20);
     cin.get();
     
@@ -30,11 +33,16 @@ int main(){
     }
 
     else if(strcmp(input, "DELETE") == 0){
-      
+      cout << "enter the ID of the student you would like to remove:" << endl;
+      cin >> id;
+      cin.get();
+    
+      deleteNode(head, head, head, id);
+      id = 0;
     }
 
     else if(strcmp(input, "QUIT") == 0){
-
+      inuse = 0;
     }
 
     else if(strcmp(input, "AVERAGE") == 0){
@@ -50,9 +58,6 @@ int main(){
   return 0;
 }
 
-//void deleteStudent(){
-
-//}
 
 void createStudent(Node* &head){
   char* first = new char[40];
@@ -77,35 +82,82 @@ void createStudent(Node* &head){
   newstudent->setID(id);
   newstudent->setGPA(gpa);
 
+  Node* previous = head;
   Node* current = head;
-  addStudent(newstudent, head, current);
+  addStudent(newstudent, head, current, previous);
 }
 
-void addStudent(Student* newstudent, Node* &head, Node* current){
-  if (head->getNext() == NULL){
+void addStudent(Student* newstudent, Node* &head, Node* current, Node* previous){
+  if (head == NULL){
     Node* newnode = new Node();
     newnode->setStudent(newstudent);
-    head->setNext(newnode);
+    head = newnode;
   }
-  else if (current->getNext() == NULL || current->getNext()->getStudent()->getID() <= current->getStudent()->getID()){
-    Node* newnode = new Node();
-    newnode->setStudent(newstudent);
-    newnode->setNext(current->getNext());
-    current->setNext(newnode);
+  else if (current == NULL || current->getStudent()->getID() >= newstudent->getID()){
+    if(current == head){
+      Node* newnode = new Node();
+      newnode->setStudent(newstudent);
+      newnode->setNext(current);
+      head = newnode;
+    }
+    else if (current != head){
+      Node* newnode = new Node();
+      newnode->setStudent(newstudent);
+      newnode->setNext(current);
+      previous->setNext(newnode);
+    }
     
   }
-  else if(current->getNext() != NULL){
-    addStudent(newstudent, head, current->getNext());
+  else if(current != NULL){
+    addStudent(newstudent, head, current->getNext(), current);
   }
 }
 
+void deleteNode(Node* current, Node* previous, Node* &head, int id){
+
+  if(head != NULL){
+    if(current == NULL){
+      cout << "The ID you entered doesn't match any in the database" << endl;
+    }
+    else if(current->getStudent()->getID() == id){
+      if(current == head){
+	head = current->getNext();
+	current->~Node();
+	//delete &current;
+	burn(current);
+      }
+      else if(current != head){
+	previous->setNext(current->getNext());
+	current->~Node();
+	//delete &current;
+	burn(current);
+      }
+    }
+    else if(current->getStudent()->getID() != id){
+      deleteNode(current->getNext(), current, head, id);
+    }
+  }
+  else if (head == NULL){
+    cout << "There are no students to delete" << endl;
+  }
+}
+
+void burn(Node* current){
+  delete &current;
+  return;
+}
 
 void print(Node* next){
   if (next == head){
-    cout << "List: ";
+    cout << "" << endl;
   }
   if (next != NULL){
-    cout << next->getStudent()->getFirstName() << " ";
+    cout << next->getStudent()->getFirstName() << " " << next->getStudent()->getLastName() << ", " << next->getStudent()->getID() << ", ";
+    cout.precision(3);
+    cout << next->getStudent()->getGPA() << endl;
     print(next->getNext());
+  }
+  else if(next == NULL){
+    cout << endl;
   }
 }
