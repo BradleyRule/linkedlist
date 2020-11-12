@@ -1,3 +1,6 @@
+#ifndef STUDENT
+#define STUDENT
+
 #include <iostream>
 #include <cstring>
 
@@ -19,3 +22,4 @@ class Student{
   int id;
   float gpa;
 };
+#endif
